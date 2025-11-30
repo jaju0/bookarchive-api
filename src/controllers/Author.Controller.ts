@@ -39,18 +39,21 @@ export interface AuthorCreationResponseData
     updated_at: Date;
 }
 
-export const createAuthor = (req: Request<any, any, AuthorCreationRequestBody>, res: Response<ResponseBody<AuthorCreationResponseData>>) => {
-    const author = new Author();
-    author.set("first_name", req.body.first_name);
-    author.set("last_name", req.body.last_name);
-    author.set("birth_date", req.body.birth_date);
+export const createAuthor = async (req: Request<any, any, AuthorCreationRequestBody>, res: Response<ResponseBody<AuthorCreationResponseData>>) => {
+    try
+    {
+        const author = new Author();
+        author.set("first_name", req.body.first_name);
+        author.set("last_name", req.body.last_name);
+        author.set("birth_date", req.body.birth_date);
 
-    if(req.body.biography)
-        author.set("biography", req.body.biography);
-    if(req.body.death_date)
-        author.set("death_date", req.body.death_date);
+        if(req.body.biography)
+            author.set("biography", req.body.biography);
+        if(req.body.death_date)
+            author.set("death_date", req.body.death_date);
 
-    author.save().then((doc) => {
+        const doc = await author.save();
+
         res.send({
             data: {
                 id: doc.id,
@@ -59,10 +62,12 @@ export const createAuthor = (req: Request<any, any, AuthorCreationRequestBody>, 
             },
             errors: [],
         });
-    }).catch((error) => {
+    }
+    catch(error)
+    {
         console.error(error);
         res.sendStatus(500);
-    });
+    }
 };
 
 export const changeAuthor = (req: Request<AuthorRequestParam, any, AuthorAmendmentRequestBody>, res: Response) => {
