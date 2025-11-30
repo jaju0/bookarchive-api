@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import validator, { validationResult } from "express-validator";
 import { Author } from "../models/Author.js";
+import { ResponseBody } from "../middleware/validationError.js";
 
 export interface AuthorCreationRequestBody
 {
@@ -32,12 +32,6 @@ export interface AuthorAmendmentRequestBody
     death_date?: Date;
 }
 
-export interface ResponseBody<IData>
-{
-    data?: IData;
-    errors: validator.ValidationError[];
-}
-
 export interface AuthorCreationResponseData
 {
     id: string;
@@ -45,16 +39,7 @@ export interface AuthorCreationResponseData
     updated_at: Date;
 }
 
-export const createAuthor = (req: Request<undefined, undefined, AuthorCreationRequestBody>, res: Response<ResponseBody<AuthorCreationResponseData>>) => {
-    const result = validationResult(req);
-
-    if(!result.isEmpty())
-    {
-        return res.send({
-            errors: result.array(),
-        });
-    }
-
+export const createAuthor = (req: Request<any, any, AuthorCreationRequestBody>, res: Response<ResponseBody<AuthorCreationResponseData>>) => {
     const author = new Author();
     author.set("first_name", req.body.first_name);
     author.set("last_name", req.body.last_name);
@@ -72,7 +57,7 @@ export const createAuthor = (req: Request<undefined, undefined, AuthorCreationRe
                 created_at: doc.createdAt,
                 updated_at: doc.updatedAt,
             },
-            errors: result.array(),
+            errors: [],
         });
     }).catch((error) => {
         console.error(error);
@@ -80,22 +65,18 @@ export const createAuthor = (req: Request<undefined, undefined, AuthorCreationRe
     });
 };
 
-export const changeAuthor = (req: Request<AuthorRequestParam, undefined, AuthorAmendmentRequestBody>, res: Response) => {
-    const result = validationResult(req);
-    res.send({ errors: result.array() });
+export const changeAuthor = (req: Request<AuthorRequestParam, any, AuthorAmendmentRequestBody>, res: Response) => {
+    res.sendStatus(200);
 };
 
 export const getAuthor = (req: Request<AuthorRequestParam>, res: Response) => {
-    const result = validationResult(req);
-    res.send({ errors: result.array() });
+    res.sendStatus(200);
 };
 
-export const getAuthors = (req: Request<undefined, undefined, undefined, AuthorListRequestQuery>, res: Response) => {
-    const result = validationResult(req);
-    res.send({ errors: result.array() });
+export const getAuthors = (req: Request<any, any, any, AuthorListRequestQuery>, res: Response) => {
+    res.sendStatus(200);
 };
 
 export const deleteAuthor = (req: Request<AuthorRequestParam>, res: Response) => {
-    const result = validationResult(req);
-    res.send({ errors: result.array() });
+    res.sendStatus(200);
 };
