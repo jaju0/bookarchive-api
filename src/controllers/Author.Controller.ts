@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import validator, { validationResult } from "express-validator";
+import { Author } from "../models/Author.js";
 
 export interface AuthorCreationRequestBody
 {
@@ -46,7 +47,37 @@ export interface AuthorCreationResponseData
 
 export const createAuthor = (req: Request<undefined, undefined, AuthorCreationRequestBody>, res: Response<ResponseBody<AuthorCreationResponseData>>) => {
     const result = validationResult(req);
-    res.send({ errors: result.array() });
+
+    if(!result.isEmpty())
+    {
+        return res.send({
+            errors: result.array(),
+        });
+    }
+
+    const author = new Author();
+    author.set("first_name", req.body.first_name);
+    author.set("last_name", req.body.last_name);
+    author.set("birth_date", req.body.birth_date);
+
+    if(req.body.biography)
+        author.set("biography", req.body.biography);
+    if(req.body.death_date)
+        author.set("death_date", req.body.death_date);
+
+    author.save().then((doc) => {
+        res.send({
+            data: {
+                id: doc.id,
+                created_at: doc.createdAt,
+                updated_at: doc.updatedAt,
+            },
+            errors: result.array(),
+        });
+    }).catch((error) => {
+        console.error(error);
+        res.sendStatus(500);
+    });
 };
 
 export const changeAuthor = (req: Request<AuthorRequestParam, undefined, AuthorAmendmentRequestBody>, res: Response) => {
