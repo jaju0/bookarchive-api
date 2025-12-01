@@ -45,6 +45,18 @@ export interface AuthorAmendmentResponseData
     updated_at: Date;
 }
 
+export interface AuthorResponseData
+{
+    id: string;
+    first_name: string;
+    last_name: string;
+    biography?: string;
+    birth_date: Date;
+    death_date?: Date;
+    created_at: Date;
+    updated_at: Date;
+}
+
 export const createAuthor = async (req: Request<any, any, AuthorCreationRequestBody>, res: Response<ResponseBody<AuthorCreationResponseData>>) => {
     try
     {
@@ -105,8 +117,32 @@ export const changeAuthor = async (req: Request<AuthorRequestParam, any, AuthorA
     }
 };
 
-export const getAuthor = (req: Request<AuthorRequestParam>, res: Response) => {
-    res.sendStatus(200);
+export const getAuthor = async (req: Request<AuthorRequestParam>, res: Response<ResponseBody<AuthorResponseData>>) => {
+    try
+    {
+        const doc = await Author.findById(req.params.id);
+        if(!doc)
+            return res.sendStatus(404);
+
+        res.send({
+            data: {
+                id: doc.id,
+                first_name: doc.first_name,
+                last_name: doc.last_name,
+                biography: doc.biography,
+                birth_date: doc.birth_date,
+                death_date: doc.death_date,
+                created_at: doc.createdAt,
+                updated_at: doc.updatedAt,
+            },
+            errors: [],
+        });
+    }
+    catch(error)
+    {
+        console.error(error);
+        res.sendStatus(500);
+    }
 };
 
 export const getAuthors = (req: Request<any, any, any, AuthorListRequestQuery>, res: Response) => {
