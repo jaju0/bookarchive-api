@@ -68,6 +68,12 @@ export interface AuthorListResponseData
     updated_at: Date;
 }
 
+export interface AuthorDeletionResponseData
+{
+    id: string;
+}
+
+
 const defaultPageLimit = process.env.AUTHOR_QUERY_DEFAULT_PAGE_LIMIT ? +process.env.AUTHOR_QUERY_DEFAULT_PAGE_LIMIT : 1000;
 
 
@@ -208,6 +214,21 @@ export const getAuthors = async (req: Request<any, any, any, AuthorListRequestQu
     }
 };
 
-export const deleteAuthor = (req: Request<AuthorRequestParam>, res: Response) => {
-    res.sendStatus(200);
+export const deleteAuthor = async (req: Request<AuthorRequestParam>, res: Response<ResponseBody<AuthorDeletionResponseData>>) => {
+    try
+    {
+        const doc = await Author.findById(req.params.id);
+        if(!doc)
+            return res.sendStatus(404);
+
+        res.send({
+            data: { id: doc.id },
+            errors: [],
+        });
+    }
+    catch(error)
+    {
+        console.error(error);
+        res.sendStatus(500);
+    }
 };
