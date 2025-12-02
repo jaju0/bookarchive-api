@@ -170,10 +170,15 @@ export const getAuthors = async (req: Request<any, any, any, AuthorListRequestQu
     {
         const limit = req.query.limit === undefined ? defaultPageLimit : req.query.limit;
 
-        const query = Author.find(undefined, "first_name last_name birth_date death_date createdAt updatedAt", { limit: limit });
+        const query = Author.find();
 
+        query.projection("first_name last_name birth_date death_date createdAt updatedAt");
+
+        // paging
+        query.setOptions({ limit: limit });
         query.find({ createdAt: { $lt: req.query.created_at_before || new Date() } });
 
+        // fields
         if(req.query.first_name)
             query.find({ first_name: req.query.first_name });
         if(req.query.last_name)
@@ -217,7 +222,7 @@ export const getAuthors = async (req: Request<any, any, any, AuthorListRequestQu
 export const deleteAuthor = async (req: Request<AuthorRequestParam>, res: Response<ResponseBody<AuthorDeletionResponseData>>) => {
     try
     {
-        const doc = await Author.findById(req.params.id);
+        const doc = await Author.findByIdAndDelete(req.params.id);
         if(!doc)
             return res.sendStatus(404);
 
