@@ -54,7 +54,9 @@ export const amendmentRequestBody = () => {
     };
 
     return [
-        validator.body("address", errorMsgs.address).optional().trim().isLength({ min: minNameLength, max: maxNameLength }).escape(),
-        validator.body("website", errorMsgs.website).optional().isURL(),
+        validator.oneOf([
+            validator.body("address", errorMsgs.address).trim().isLength({ min: minNameLength, max: maxNameLength }).escape(),
+            validator.body("website", errorMsgs.website).isURL(),
+        ]),
     ];
 };
