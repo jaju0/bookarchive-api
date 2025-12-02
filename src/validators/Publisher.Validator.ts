@@ -28,7 +28,7 @@ export const listRequestQuery = () => {
         validator.query("name", errorMsgs.name).optional().trim().isLength({ min: minAddressLength, max: maxAddressLength }).escape(),
         validator.query("address", errorMsgs.address).optional().trim().isLength({ min: minAddressLength, max: maxAddressLength }).escape(),
         validator.query("website", errorMsgs.website).optional().isURL(),
-        validator.query("created_at_before", errorMsgs.created_at_before).optional().isDate(),
+        validator.query("created_at_before", errorMsgs.created_at_before).optional().isISO8601(),
         validator.query("limit", errorMsgs.limit).optional().isInt(),
     ];
 };
