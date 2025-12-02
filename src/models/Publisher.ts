@@ -5,6 +5,8 @@ export interface IPublisher extends mongoose.Document
     name: string;
     address?: string;
     website?: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 type PublisherModel = mongoose.Model<IPublisher>;

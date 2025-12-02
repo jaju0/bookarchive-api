@@ -4,6 +4,8 @@ export interface IGenre extends mongoose.Document
 {
     name: string;
     description?: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 type GenreModel = mongoose.Model<IGenre>;
