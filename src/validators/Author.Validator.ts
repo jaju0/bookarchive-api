@@ -36,16 +36,16 @@ export const listRequestQuery = () => {
         name: `its length must be between ${minNameLength} and ${maxNameLength} if provided`,
         birth_date: `must be in date format if provided`,
         death_date: `must be in date format if provided`,
-        page: `must be an integer if provided`,
-        page_count: `must be an integer if provided`,
+        created_at_before: `must be in date format if provided`,
+        limit: `must be an integer if provided`,
     };
     
     return [
         validator.query(["first_name", "last_name"], errorMsgs.name).optional().isLength({ min: minNameLength, max: maxBiographyLength }).escape(),
         validator.query("birth_date", errorMsgs.birth_date).optional().isDate(),
         validator.query("death_date", errorMsgs.death_date).optional().isDate(),
-        validator.query("page", errorMsgs.page).optional().isInt(),
-        validator.query("page_count", errorMsgs.page_count).optional().isInt(),
+        validator.query("created_at_before", errorMsgs.created_at_before).optional().isDate(),
+        validator.query("limit", errorMsgs.limit).optional().isInt(),
     ];
 }
 
