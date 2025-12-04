@@ -1,4 +1,4 @@
-type TLanguage =
+export type LanguageCode =
   | 'ab'
   | 'aa'
   | 'af'
@@ -184,7 +184,7 @@ type TLanguage =
   | 'za'
   | 'zu';
 
-const LANGUAGES: Record<TLanguage, string> = {
+const LANGUAGES: Record<LanguageCode, string> = {
   ab: 'Abkhazian',
   aa: 'Afar',
   af: 'Afrikaans',
@@ -373,10 +373,10 @@ const LANGUAGES: Record<TLanguage, string> = {
 
 export function getLangCodes()
 {
-    return Object.keys(LANGUAGES) as TLanguage[];
+    return Object.keys(LANGUAGES) as LanguageCode[];
 }
 
-export function getLanguageName(code: TLanguage): string | undefined
+export function geLanguageCodeName(code: LanguageCode): string | undefined
 {
     return LANGUAGES[code];
 }

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import * as langCodes from "../utils/langCodes.js";
+import { LanguageCode } from "../utils/langCodes.js";
 
 export interface IBook extends mongoose.Document
 {
@@ -7,12 +8,12 @@ export interface IBook extends mongoose.Document
     subtitle?: string;
     description?: string;
     isbn_10?: string;
-    isbn_13: string;
-    author_id: mongoose.ObjectId;
-    publisher_id: mongoose.ObjectId;
+    isbn_13?: string;
+    author: mongoose.Types.ObjectId;
+    publisher: mongoose.Types.ObjectId;
     publication_date: Date;
-    genre_id: mongoose.ObjectId;
-    language: string;
+    genre: mongoose.Types.ObjectId;
+    language: LanguageCode;
     page_count: number;
     cover_image_url?: string;
     stock_count: number;
@@ -46,24 +47,27 @@ const bookSchema = new mongoose.Schema<IBook, BookModel>({
     },
     isbn_13: {
         type: String,
-        required: true,
+        required: false,
         maxLength: 13,
         trim: true,
     },
-    author_id: {
+    author: {
         type: mongoose.Types.ObjectId,
+        ref: "Author",
         required: true,
     },
-    publisher_id: {
+    publisher: {
         type: mongoose.Types.ObjectId,
+        ref: "Publisher",
         required: true,
     },
     publication_date: {
         type: Date,
         required: true,
     },
-    genre_id: {
+    genre: {
         type: mongoose.Types.ObjectId,
+        ref: "Genre",
         required: true,
     },
     language: {
