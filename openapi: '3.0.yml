@@ -1,0 +1,574 @@
+openapi: '3.0.3'
+info:
+  title: Book Archive REST API
+  version: '1.0'
+  description: Store books and reference them by author, publisher & genre.
+paths:
+  /books:
+    get:
+      tags: [Book]
+      summary: Find Books in the Archive
+      parameters:
+        - in: query
+          name: title
+          schema:
+            type: string
+          description: title of a book to find
+        - in: query
+          name: author_id
+          schema:
+            type: string
+          description: id of an author entry referenced the by the book(s) to find
+        - in: query
+          name: publisher_id
+          schema:
+            type: string
+          description: id of a publisher entry referenced by the book(s) to find
+        - in: query
+          name: genre_id
+          schema:
+            type: string
+          description: id of a genre entry referenced by the book(s) to find
+        - in: query
+          name: publication_date
+          schema:
+            type: string
+          description: publication date of the book(s) to find
+        - in: query
+          name: language
+          schema:
+            type: string
+          description: language code in ISO 6391 format of the book(s) to find
+        - in: query
+          name: created_at_before
+          schema:
+            type: string
+          description: used for pagination (created_at_before of the last response)
+        - in: query
+          name: limit
+          schema:
+            type: string
+          description: maximal number of entries to receive in the response
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/BookList"
+                  cursor:
+                    $ref: "#/components/schemas/Cursor"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/AlternativeValidationError"
+                        - $ref: "#/components/schemas/GroupedAlternativeValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+    post:
+      tags: [Book]
+      summary: Add a Book to the Archive
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - author_id
+                - publisher_id
+                - publicaiton_date
+                - genre_id
+                - language
+                - page_count
+                - stock_count
+              properties:
+                title:
+                  type: string
+                  description: book title
+                  example: The Chronos Key
+                subtitle:
+                  type: string
+                  description: book subtitle
+                  example: Unlocking the Paradox of Time
+                description:
+                  type: string
+                  description: book description
+                  example: A brilliant but disgraced physicist must navigate...
+                isbn_10:
+                  type: string
+                  description: ISBN-10 code of book
+                  example: 034547076X
+                isbn_13:
+                  type: string
+                  description: ISBN-13 code of book
+                  example: 978-0345470767
+                author_id:
+                  type: string
+                  description: referenced author id
+                  example: 6930719b4366e4b6e7b81d7f
+                publisher_id:
+                  type: string
+                  description: referenced publisher id
+                  example: 69306ac74366e4b6e7b81d79
+                publication_date:
+                  type: string
+                  description: publication date in YYYY-MM-DD format
+                  example: 2025-12-05
+                genre_id:
+                  type: string
+                  description: referenced genre id
+                  example: 692f3eb9595690df14885a89
+                language:
+                  type: string
+                  description: language code in ISO 6391 format
+                  example: en
+                page_count:
+                  type: number
+                  description: number of pages of the book
+                  example: 523
+                cover_image_url:
+                  type: string
+                  description: link to the cover image of the book
+                stock_count:
+                  type: number
+                  description: number of books in stock
+                  example: 5
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/BookCreationInfo"
+                  cursor:
+                    $ref: "#/components/schemas/Cursor"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/AlternativeValidationError"
+                        - $ref: "#/components/schemas/GroupedAlternativeValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+  /books/{idOrIsbn}:
+    get:
+      tags: [Book]
+      summary: Get detailed book data by ID or ISBN
+      parameters:
+        - in: path
+          name: idOrIsbn
+          schema:
+            type: string
+          required: true
+          description: books ID, ISBN-10 or ISBN-13 code
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/DetailedBook"
+                  cursor:
+                    $ref: "#/components/schemas/Cursor"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/AlternativeValidationError"
+                        - $ref: "#/components/schemas/GroupedAlternativeValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+components:
+  responses:
+    404:
+      description: Not Found
+    429:
+      description: Too Many Requests
+      content:
+        text/html:
+          schema:
+            type: string
+            example: Too many requests, please try again later.
+    500:
+      description: Internal Server Error
+  schemas:
+    Response:
+      type: object
+      required:
+        - errors
+      properties:
+        data:
+          oneOf:
+            - $ref: "#/components/schemas/Book"
+            - $ref: "#/components/schemas/BookList"
+            - $ref: "#/components/schemas/DetailedBook"
+            - $ref: "#/components/schemas/BookCreationInfo"
+        cursor:
+          $ref: "#/components/schemas/Cursor"
+        errors:
+          type: array
+          items:
+            oneOf:
+              - $ref: "#/components/schemas/FieldValidationError"
+              - $ref: "#/components/schemas/AlternativeValidationError"
+              - $ref: "#/components/schemas/GroupedAlternativeValidationError"
+              - $ref: "#/components/schemas/UnknownFieldValidationError"
+    Book:
+      type: object
+      required:
+        - id
+        - title
+        - author
+        - publisher
+        - publication_date
+        - genre
+        - language
+        - page_count
+        - stock_count
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          description: book id
+        title:
+          type: string
+          description: book title
+        subtitle:
+          type: string
+          description: book subtitle
+        description:
+          type: string
+          description: book description
+        isbn_10:
+          type: string
+          description: ISBN-10 code of book
+        isbn_13:
+          type: string
+          description: ISBN-13 code of book
+        author:
+          type: string
+          description: referenced author id
+        publisher:
+          type: string
+          description: referenced publisher id
+        publication_date:
+          type: string
+          description: publication date in YYYY-MM-DD format
+        genre:
+          type: string
+          description: referenced genre id
+        language:
+          type: string
+          description: language code in ISO 6391 format
+        page_count:
+          type: number
+          description: number of pages of the book
+        cover_image_url:
+          type: string
+          description: link to the cover image of the book
+        stock_count:
+          type: string
+          description: number of books in stock
+        created_at:
+          type: string
+          description: creation date format of this document in ISO 8601
+        updated_at:
+          type: string
+          description: date of last update of this document in ISO 8601 format
+    BookList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Book"
+    DetailedBook:
+      type: object
+      required:
+        - id
+        - title
+        - author
+        - publisher
+        - publication_date
+        - genre
+        - language
+        - page_count
+        - stock_count
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          description: book id
+        title:
+          type: string
+          description: book title
+        subtitle:
+          type: string
+          description: book subtitle
+        description:
+          type: string
+          description: book description
+        isbn_10:
+          type: string
+          description: ISBN-10 code of book
+        isbn_13:
+          type: string
+          description: ISBN-13 code of book
+        author:
+          $ref: "#/components/schemas/Author"
+          description: referenced author data
+        publisher:
+          $ref: "#/components/schemas/Publisher"
+          description: referenced publisher data
+        publication_date:
+          type: string
+          description: publication date in YYYY-MM-DD format
+        genre:
+          $ref: "#/components/schemas/Genre"
+          description: referenced genre data
+        language:
+          type: string
+          description: language code in ISO 6391 format
+        page_count:
+          type: number
+          description: number of pages of the book
+        cover_image_url:
+          type: string
+          description: link to the cover image of the book
+        stock_count:
+          type: string
+          description: number of books in stock
+        created_at:
+          type: string
+          description: creation date format of this document in ISO 8601
+        updated_at:
+          type: string
+          description: date of last update of this document in ISO 8601 format
+    BookCreationInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: book id
+        created_at:
+          type: string
+          description: creation date format of this document in ISO 8601
+    Author:
+      type: object
+      required:
+        - id
+        - first_name
+        - last_name
+        - birth_date
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          description: author id
+        first_name:
+          type: string
+          description: first name of author
+        last_name:
+          type: string
+          description: last name of author
+        biography:
+          type: string
+          description: biography text
+        birth_date:
+          type: string
+          description: birth date in YYYY-MM-DD format
+        death_date:
+          type: string
+          description: death date in YYYY-MM-DD format
+        created_at:
+          type: string
+          description: creation date format of this document in ISO 8601
+        updated_at:
+          type: string
+          description: date of last update of this document in ISO 8601 format
+    Publisher:
+      type: object
+      required:
+        - id
+        - name
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          description: publisher id
+        name:
+          type: string
+          description: publisher name
+        address:
+          type: string
+          description: publisher address
+        website:
+          type: string
+          description: website url
+        created_at:
+          type: string
+          description: creation date format of this document in ISO 8601
+        updated_at:
+          type: string
+          description: date of last update of this document in ISO 8601 format
+    Genre:
+      type: object
+      required:
+        - id
+        - name
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          description: genre id
+        name:
+          type: string
+          description: genre name
+        description:
+          type: string
+          description: genre description
+        created_at:
+          type: string
+          description: creation date format of this document in ISO 8601
+        updated_at:
+          type: string
+          description: date of last update of this document in ISO 8601 format
+    Cursor:
+      type: object
+      properties:
+        created_at_before:
+          type: string
+          description: created_at_before value for the next request
+        limit:
+          type: number
+          description: maximal number of items
+    FieldValidationError:
+      type: object
+      description: error description of an invalid field provided in a request
+      properties:
+        type:
+          type: string
+          enum: [field]
+        location:
+          type: string
+          enum: [body, params, query]
+        path:
+          type: string
+          description: dot seperated path to property
+          example: isbn_10
+        value:
+          oneOf:
+            - type: string
+            - type: number
+            - type: integer
+            - type: boolean
+            - type: array
+            - type: object
+        msg:
+          type: string
+          description: error message for property
+    AlternativeValidationError:
+      type: object
+      description: error description of two or more fields provided in a request where at least one must be provided
+      properties:
+        type:
+          type: string
+          enum: [alternative]
+        msg:
+          type: string
+          description: error message for alternatives
+        nestedErrors:
+          type: array
+          items:
+            type: object
+            $ref: "#/components/schemas/FieldValidationError"
+    GroupedAlternativeValidationError:
+      type: object
+      description: error description of two or more fields provided in a request where at least one must be provided
+      properties:
+        type:
+          type: string
+          enum: [alternative_grouped]
+        msg:
+          type: string
+          description: error message for alternatives
+        nestedErrors:
+          type: array
+          items:
+            type: array
+            items:
+              type: object
+              $ref: "#/components/schemas/FieldValidationError"
+    UnknownFieldValidationError:
+      type: object
+      description: error description for unexpected fields that have been provided in a request
+      properties:
+        type:
+          type: string
+          enum: [unknown_fields]
+        msg:
+          type: string
+          description: error message for alternatives
+        fields:
+          type: array
+          items:
+            type: object
+            properties:
+              path:
+                type: string
+                description: dot seperated path to property
+              location:
+                type: string
+                enum: [body, params, query]
+              value:
+                oneOf:
+                  - type: string
+                  - type: number
+                  - type: integer
+                  - type: boolean
+                  - type: array
+                  - type: object
+tags:
+  - name: Book
+    description: create, get, update & delete book entries
+  - name: Author
+    description: create, get, update & delete author entries
+  - name: Publisher
+    description: create, get update & delete publisher entries
+  - name: Genre
+    description: create, get, update & delete genre entries
