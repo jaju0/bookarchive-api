@@ -80,6 +80,8 @@ paths:
     post:
       tags: [Book]
       summary: Add a Book to the Archive
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
@@ -157,7 +159,7 @@ paths:
                   - errors
                 properties:
                   data:
-                    $ref: "#/components/schemas/BookCreationInfo"
+                    $ref: "#/components/schemas/CreationInfo"
                   cursor:
                     $ref: "#/components/schemas/Cursor"
                   errors:
@@ -195,6 +197,196 @@ paths:
                 properties:
                   data:
                     $ref: "#/components/schemas/DetailedBook"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+    put:
+      tags: [Book]
+      summary: Change book data by ID or ISBN
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: idOrIsbn
+          schema:
+            type: string
+          required: true
+          description: books ID, ISBN-10 or ISBN-13 code
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: book title
+                  example: The Chronos Key
+                subtitle:
+                  type: string
+                  description: book subtitle
+                  example: Unlocking the Paradox of Time
+                description:
+                  type: string
+                  description: book description
+                  example: A brilliant but disgraced physicist must navigate...
+                isbn_10:
+                  type: string
+                  description: ISBN-10 code of book
+                  example: 034547076X
+                isbn_13:
+                  type: string
+                  description: ISBN-13 code of book
+                  example: 978-0345470767
+                author_id:
+                  type: string
+                  description: referenced author id
+                  example: 6930719b4366e4b6e7b81d7f
+                publisher_id:
+                  type: string
+                  description: referenced publisher id
+                  example: 69306ac74366e4b6e7b81d79
+                publication_date:
+                  type: string
+                  description: publication date in YYYY-MM-DD format
+                  example: 2025-12-05
+                genre_id:
+                  type: string
+                  description: referenced genre id
+                  example: 692f3eb9595690df14885a89
+                language:
+                  type: string
+                  description: language code in ISO 6391 format
+                  example: en
+                page_count:
+                  type: number
+                  description: number of pages of the book
+                  example: 523
+                cover_image_url:
+                  type: string
+                  description: link to the cover image of the book
+                stock_count:
+                  type: number
+                  description: number of books in stock
+                  example: 5
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/AmendmentInfo"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/AlternativeValidationError"
+                        - $ref: "#/components/schemas/GroupedAlternativeValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      tags: [Book]
+      summary: Delete a book by ID or ISBN
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: idOrIsbn
+          schema:
+            type: string
+          required: true
+          description: books ID, ISBN-10 or ISBN-13 code
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/DeletionInfo"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+  /authors:
+    get:
+      tags: [Author]
+      summary: Find Authors in the Archive
+      parameters:
+        - in: query
+          name: first_name
+          schema:
+            type: string
+          description: first name of the author(s) to find
+        - in: query
+          name: last_name
+          schema:
+            type: string
+          description: last name of the author(s) to find
+        - in: query
+          name: birth_date
+          schema:
+            type: string
+          description: birth date of the author(s) in YYYY-MM-DD format
+        - in: query
+          name: death_date
+          schema:
+            type: string
+          description: death date of the author(s) in YYYY-MM-DD format
+        - in: query
+          name: created_at_before
+          schema:
+            type: string
+          description: used for pagination (created_at_before of the last response)
+        - in: query
+          name: limit
+          schema:
+            type: string
+          description: maximal number of entries to receive in the response
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/AuthorList"
                   cursor:
                     $ref: "#/components/schemas/Cursor"
                   errors:
@@ -211,7 +403,598 @@ paths:
           $ref: "#/components/responses/429"
         "500":
           $ref: "#/components/responses/500"
+    post:
+      tags: [Author]
+      summary: Add an Author to the Archive
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - first_name
+                - last_name
+                - birth_date
+              properties:
+                first_name:
+                  type: string
+                  description: first name
+                  example: Elara
+                last_name:
+                  type: string
+                  description: last name
+                  example: Morningside
+                biography:
+                  type: string
+                  description: biography text
+                  example: Elara Morningside (born 1983 in the coastal town of Brindlehaven) is an imaginary British novelist known for her atmospheric fantasy tales that blend folklore, psychological depth, and slow-burn mystery. After studying comparative mythology at the fictitious Aldwych Institute, she spent several years traveling through remote island communities, collecting local legends that later inspired her acclaimed Tideworn Trilogy. Morningside is described as reclusive, preferring long solitary walks along rugged cliffs to public appearances. Her work often explores the tension between memory and myth, and she is celebrated for her evocative prose and richly textured world-building.
+                birth_date:
+                  type: string
+                  description: birth date in YYYY-MM-DD format
+                  example: 1983-04-23
+                death_date:
+                  type: string
+                  description: death date in YYYY-MM-DD format
+                  example: null
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/CreationInfo"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+  /authors/{id}:
+    get:
+      tags: [Author]
+      summary: Get an Author by ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: authors ID
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/AuthorList"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+    put:
+      tags: [Author]
+      summary: Change author data by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: authors ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                biography:
+                  type: string
+                  description: biography text
+                  example: new biography...
+                death_date:
+                  type: string
+                  description: death date in YYYY-MM-DD format
+                  example: 2025-11-14
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/AmendmentInfo"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      tags: [Author]
+      summary: Delete an Author by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: authors ID
+      responses:
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+  /publishers:
+    get:
+      tags: [Publisher]
+      summary: Find Publishers in the Archive
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: name of publisher to find
+        - in: query
+          name: address
+          schema:
+            type: string
+          description: address of publisher to find
+        - in: query
+          name: website
+          schema:
+            type: string
+          description: website url of publisher to find
+        - in: query
+          name: created_at_before
+          schema:
+            type: string
+          description: used for pagination (created_at_before of the last response)
+        - in: query
+          name: limit
+          schema:
+            type: string
+          description: maximal number of entries to receive in the response
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/PublisherList"
+                  cursor:
+                    $ref: "#/components/schemas/Cursor"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+    post:
+      tags: [Publisher]
+      summary: Add a Publisher to the Archive
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: name of the publisher
+                  example: Silverquill Press
+                address:
+                  type: string
+                  description: publisher address
+                  example: 47 Lantern Wharf, Northgate District, 28104 Frosthaven, UK
+                website:
+                  type: string
+                  description: publisher website url
+                  example: https://www.silverquillpress-fiction.example
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/CreationInfo"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+  /publishers/{id}:
+    get:
+      tags: [Publisher]
+      summary: Get a Publisher by ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: publishers ID
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Publisher"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+    put:
+      tags: [Publisher]
+      summary: Change publisher data by ID
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  description: new address of publisher
+                  example: 112 Maplecourt Row, Harborstone Quarter, Weyleigh-on-Estmere, 6W2 9LT, United Kingdom
+                website:
+                  type: string
+                  description: new website url of publisher
+                  example: https://www.silverquillpublishing.co-imaginary.example
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: publishers ID
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/AmendmentInfo"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      tags: [Publisher]
+      summary: Delete a Publisher by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: publishers ID
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/DeletionInfo"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+  /genres:
+    get:
+      tags: [Genre]
+      summary: Find Genres in the Archive
+      parameters:
+        - in: query
+          name: created_at_before
+          schema:
+            type: string
+          description: used for pagination (created_at_before of the last response)
+        - in: query
+          name: limit
+          schema:
+            type: string
+          description: maximal number of entries to receive in the response
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/GenreList"
+                  cursor:
+                    $ref: "#/components/schemas/Cursor"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+    post:
+      tags: [Genre]
+      summary: Add a Genre to the Archive
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: genre name
+                  example: Mythic Solarpunk
+                description:
+                  type: string
+                  description: genre description
+                  example: Mythic Solarpunk blends future-forward sustainability with ancient folklore and mythic resonance. Stories in this genre imagine societies that have healed their environment through green technology, communal ingenuity, and regenerative design—yet still find themselves guided, challenged, or haunted by old gods, elemental spirits, or legendary creatures. It’s a hopeful, luminous genre where solar cities stand beside enchanted forests, wind towers hum with ancestral magic, and humanity’s path to a brighter future is shaped as much by cultural memory as by innovation.
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/CreationInfo"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+  /genres/{nameOrId}:
+    get:
+      tags: [Genre]
+      summary: Get a Genre by Name or ID
+      parameters:
+        - in: path
+          name: nameOrId
+          schema:
+            type: string
+          required: true
+          description: genres Name or ID
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Genre"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+    put:
+      tags: [Genre]
+      summary: Change genre data by Name or ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: nameOrId
+          schema:
+            type: string
+          required: true
+          description: genres Name or ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: new genre description
+                  example: new description...
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/AmendmentInfo"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
+    delete:
+      tags: [Genre]
+      summary: Delete Genre by Name or ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: nameOrId
+          schema:
+            type: string
+          required: true
+          description: genres Name or ID
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  data:
+                    $ref: "#/components/schemas/DeletionInfo"
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "404":
+          $ref: "#/components/responses/404"
+        "429":
+          $ref: "#/components/responses/429"
+        "500":
+          $ref: "#/components/responses/500"
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   responses:
     404:
       description: Not Found
@@ -225,27 +1008,6 @@ components:
     500:
       description: Internal Server Error
   schemas:
-    Response:
-      type: object
-      required:
-        - errors
-      properties:
-        data:
-          oneOf:
-            - $ref: "#/components/schemas/Book"
-            - $ref: "#/components/schemas/BookList"
-            - $ref: "#/components/schemas/DetailedBook"
-            - $ref: "#/components/schemas/BookCreationInfo"
-        cursor:
-          $ref: "#/components/schemas/Cursor"
-        errors:
-          type: array
-          items:
-            oneOf:
-              - $ref: "#/components/schemas/FieldValidationError"
-              - $ref: "#/components/schemas/AlternativeValidationError"
-              - $ref: "#/components/schemas/GroupedAlternativeValidationError"
-              - $ref: "#/components/schemas/UnknownFieldValidationError"
     Book:
       type: object
       required:
@@ -376,15 +1138,6 @@ components:
         updated_at:
           type: string
           description: date of last update of this document in ISO 8601 format
-    BookCreationInfo:
-      type: object
-      properties:
-        id:
-          type: string
-          description: book id
-        created_at:
-          type: string
-          description: creation date format of this document in ISO 8601
     Author:
       type: object
       required:
@@ -419,6 +1172,10 @@ components:
         updated_at:
           type: string
           description: date of last update of this document in ISO 8601 format
+    AuthorList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Author"
     Publisher:
       type: object
       required:
@@ -445,6 +1202,10 @@ components:
         updated_at:
           type: string
           description: date of last update of this document in ISO 8601 format
+    PublisherList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Publisher"
     Genre:
       type: object
       required:
@@ -468,6 +1229,31 @@ components:
         updated_at:
           type: string
           description: date of last update of this document in ISO 8601 format
+    GenreList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Genre"
+    Response:
+      type: object
+      required:
+        - errors
+      properties:
+        data:
+          oneOf:
+            - $ref: "#/components/schemas/Book"
+            - $ref: "#/components/schemas/BookList"
+            - $ref: "#/components/schemas/DetailedBook"
+            - $ref: "#/components/schemas/CreationInfo"
+        cursor:
+          $ref: "#/components/schemas/Cursor"
+        errors:
+          type: array
+          items:
+            oneOf:
+              - $ref: "#/components/schemas/FieldValidationError"
+              - $ref: "#/components/schemas/AlternativeValidationError"
+              - $ref: "#/components/schemas/GroupedAlternativeValidationError"
+              - $ref: "#/components/schemas/UnknownFieldValidationError"
     Cursor:
       type: object
       properties:
@@ -477,6 +1263,38 @@ components:
         limit:
           type: number
           description: maximal number of items
+    CreationInfo:
+      type: object
+      required:
+        - id
+        - created_at
+      properties:
+        id:
+          type: string
+          description: book id
+        created_at:
+          type: string
+          description: creation date format of this document in ISO 8601
+    AmendmentInfo:
+      type: object
+      required:
+        - id
+        - updated_at
+      properties:
+        id:
+          type: string
+          description: book id
+        updated_at:
+          type: string
+          description: date of last update of this document in ISO 8601
+    DeletionInfo:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: book id
     FieldValidationError:
       type: object
       description: error description of an invalid field provided in a request
