@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { FieldValidationError } from "express-validator";
 import mongoose from "mongoose";
 import { EnvironmentVariables } from "../config/env.js";
-import { ResponseBody } from "../middleware/validationError.js";
+import { ErrorResponseBody, ResponseBody } from "../middleware/validationError.js";
 import { LanguageCode } from "../utils/langCodes.js";
 import { Book } from "../models/Book.js";
 import { AuthorResponseData } from "./Author.Controller.js";
@@ -190,7 +190,6 @@ export const getBook = async (req: Request<BookRequestParam>, res: Response<Resp
                 created_at: doc.createdAt,
                 updated_at: doc.updatedAt,
             },
-            errors: [],
         });
     }
     catch(error)
@@ -255,7 +254,6 @@ export const getBooks = async (req: Request<any, any, any, BookListRequestQuery>
                 created_at_before: createdAtBefore,
                 limit: limit,
             },
-            errors: [],
         })
     }
     catch(error)
@@ -265,7 +263,7 @@ export const getBooks = async (req: Request<any, any, any, BookListRequestQuery>
     }
 };
 
-export const createBook = async (req: Request<any, any, BookCreationRequestBody>, res: Response<ResponseBody<BookCreationResponseData>>) => {
+export const createBook = async (req: Request<any, any, BookCreationRequestBody>, res: Response<ResponseBody<BookCreationResponseData> | ErrorResponseBody>) => {
     try
     {
         const book = new Book();
@@ -325,7 +323,7 @@ export const createBook = async (req: Request<any, any, BookCreationRequestBody>
         }
 
         if(populationErrors.length)
-            return res.send({ errors: populationErrors });
+            return res.status(400).send({ errors: populationErrors });
 
         const doc = await book.save();
 
@@ -334,7 +332,6 @@ export const createBook = async (req: Request<any, any, BookCreationRequestBody>
                 id: doc.id,
                 created_at: doc.createdAt,
             },
-            errors: [],
         });
     }
     catch(error)
@@ -344,7 +341,7 @@ export const createBook = async (req: Request<any, any, BookCreationRequestBody>
     }
 };
 
-export const changeBook = async (req: Request<BookRequestParam, any, BookAmendmentRequestBody>, res: Response<ResponseBody<BookAmendmentResponseData>>) => {
+export const changeBook = async (req: Request<BookRequestParam, any, BookAmendmentRequestBody>, res: Response<ResponseBody<BookAmendmentResponseData> | ErrorResponseBody>) => {
     try
     {
         const filter = {
@@ -397,7 +394,7 @@ export const changeBook = async (req: Request<BookRequestParam, any, BookAmendme
 
         if(populationErrors.length)
         {
-            return res.send({
+            return res.status(400).send({
                 errors: populationErrors,
             });
         }
@@ -437,7 +434,6 @@ export const changeBook = async (req: Request<BookRequestParam, any, BookAmendme
                 id: doc.id,
                 updated_at: doc.updatedAt,
             },
-            errors: [],
         });
         
     }
@@ -466,7 +462,6 @@ export const deleteBook = async (req: Request<BookRequestParam>, res: Response<R
 
         res.send({
             data: { id: doc.id },
-            errors: [],
         });
     }
     catch(error)

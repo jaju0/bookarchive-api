@@ -74,7 +74,6 @@ export const getPublisher = async (req: Request<PublisherRequestParam>, res: Res
                 created_at: doc.createdAt,
                 updated_at: doc.updatedAt,
             },
-            errors: [],
         });
     }
     catch(error)
@@ -122,7 +121,6 @@ export const getPublishers = async (req: Request<any, any, any, PublisherListReq
                 created_at_before: createdAtBefore,
                 limit: limit,
             },
-            errors: [],
         });
     }
     catch(error)
@@ -151,7 +149,6 @@ export const createPublisher = async (req: Request<any, any, PublisherCreationRe
                 id: doc.id,
                 created_at: doc.createdAt,
             },
-            errors: [],
         });
     }
     catch(error)
@@ -180,7 +177,6 @@ export const changePublisher = async (req: Request<PublisherRequestParam, any, P
                 id: doc.id,
                 updated_at: doc.updatedAt,
             },
-            errors: [],
         });
     }
     catch(error)
@@ -201,7 +197,6 @@ export const deletePublisher = async (req: Request<PublisherRequestParam>, res: 
             data: <PublisherDeletionResponseData> {
                 id: doc.id,
             },
-            errors: [],
         });
     }
     catch(error)

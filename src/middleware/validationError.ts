@@ -9,17 +9,21 @@ export interface Cursor
 
 export interface ResponseBody<IData>
 {
-    data?: IData;
+    data: IData;
     cursor?: Cursor;
+}
+
+export interface ErrorResponseBody
+{
     errors: validator.ValidationError[];
 }
 
-export const validationError = (req: Request, res: Response<ResponseBody<any>>, next: NextFunction) => {
+export const validationError = (req: Request, res: Response<ErrorResponseBody>, next: NextFunction) => {
     const result = validationResult(req);
     if(result.isEmpty())
         return next();
 
-    return res.send({
+    return res.status(400).send({
         errors: result.array(),
     });
 }

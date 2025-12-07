@@ -57,12 +57,21 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/BookList"
                   cursor:
                     $ref: "#/components/schemas/Cursor"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -156,12 +165,21 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/CreationInfo"
                   cursor:
                     $ref: "#/components/schemas/Cursor"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -197,10 +215,19 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/DetailedBook"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -290,10 +317,19 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/AmendmentInfo"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -332,10 +368,19 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/DeletionInfo"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -395,19 +440,26 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/AuthorList"
                   cursor:
                     $ref: "#/components/schemas/Cursor"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
                       oneOf:
                         - $ref: "#/components/schemas/FieldValidationError"
-                        - $ref: "#/components/schemas/AlternativeValidationError"
-                        - $ref: "#/components/schemas/GroupedAlternativeValidationError"
                         - $ref: "#/components/schemas/UnknownFieldValidationError"
         "404":
           $ref: "#/components/responses/404"
@@ -458,10 +510,19 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data 
                 properties:
                   data:
                     $ref: "#/components/schemas/CreationInfo"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -495,10 +556,19 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/AuthorList"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -545,10 +615,19 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/AmendmentInfo"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -578,6 +657,32 @@ paths:
           required: true
           description: authors ID
       responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    $ref: "#/components/schemas/DeletionInfo"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: "#/components/schemas/FieldValidationError"
+                        - $ref: "#/components/schemas/UnknownFieldValidationError"
         "401":
           $ref: "#/components/responses/401"
         "403":
@@ -626,12 +731,21 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/PublisherList"
                   cursor:
                     $ref: "#/components/schemas/Cursor"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -677,10 +791,19 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/CreationInfo"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -714,10 +837,19 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/Publisher"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -764,10 +896,19 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/AmendmentInfo"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -804,10 +945,19 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/DeletionInfo"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -847,12 +997,21 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/GenreList"
                   cursor:
                     $ref: "#/components/schemas/Cursor"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -894,10 +1053,19 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/CreationInfo"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -931,10 +1099,19 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/Genre"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -977,10 +1154,19 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/AmendmentInfo"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -1017,10 +1203,19 @@ paths:
               schema:
                 type: object
                 required:
-                  - errors
+                  - data
                 properties:
                   data:
                     $ref: "#/components/schemas/DeletionInfo"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - errors
+                properties:
                   errors:
                     type: array
                     items:
@@ -1288,7 +1483,7 @@ components:
     Response:
       type: object
       required:
-        - errors
+        - data
       properties:
         data:
           oneOf:
@@ -1298,6 +1493,11 @@ components:
             - $ref: "#/components/schemas/CreationInfo"
         cursor:
           $ref: "#/components/schemas/Cursor"
+    ErrorResponse:
+      type: object
+      required:
+      - errors
+      properties:
         errors:
           type: array
           items:

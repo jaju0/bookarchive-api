@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { FieldValidationError } from "express-validator";
 import { EnvironmentVariables } from "../config/env.js";
 import { Genre } from "../models/Genre.js";
-import { ResponseBody } from "../middleware/validationError.js";
+import { ErrorResponseBody, ResponseBody } from "../middleware/validationError.js";
 import mongoose from "mongoose";
 
 export interface GenreRequestParam
@@ -69,7 +69,6 @@ export const getGenre = async (req: Request<GenreRequestParam>, res: Response<Re
                 updated_at: doc.updatedAt,
                 created_at: doc.createdAt,
             },
-            errors: [],
         });
     }
     catch(error)
@@ -108,7 +107,6 @@ export const getGenres = async (req: Request<any, any, any, GenreListRequestQuer
                 created_at_before: createdAtBefore,
                 limit: limit,
             },
-            errors: [],
         });
     }
     catch(error)
@@ -118,7 +116,7 @@ export const getGenres = async (req: Request<any, any, any, GenreListRequestQuer
     }
 };
 
-export const createGenre = async (req: Request<any, any, GenreCreationRequestBody>, res: Response<ResponseBody<GenreCreationResponseData>>) => {
+export const createGenre = async (req: Request<any, any, GenreCreationRequestBody>, res: Response<ResponseBody<GenreCreationResponseData> | ErrorResponseBody>) => {
     try
     {
         const alreadyExists = await Genre.exists({ name: req.body.name });
@@ -132,7 +130,7 @@ export const createGenre = async (req: Request<any, any, GenreCreationRequestBod
                 msg: `a genre with name ${req.body.name} already exists`,
             };
 
-            return res.send({ errors: [ error ] });
+            return res.status(400).send({ errors: [ error ] });
         }
 
         const genre = new Genre();
@@ -148,7 +146,6 @@ export const createGenre = async (req: Request<any, any, GenreCreationRequestBod
                 id: doc.id,
                 created_at: doc.createdAt,
             },
-            errors: [],
         });
     }
     catch(error)
@@ -175,7 +172,6 @@ export const changeGenre = async (req: Request<GenreRequestParam, any, GenreAmen
                 id: doc.id,
                 updated_at: doc.updatedAt,
             },
-            errors: [],
         });
     }
     catch(error)
@@ -194,7 +190,6 @@ export const deleteGenre = async (req: Request<GenreRequestParam>, res: Response
 
         res.send({
             data: { id: doc.id },
-            errors: [],
         });
     }
     catch(error)

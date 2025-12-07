@@ -96,7 +96,6 @@ export const createAuthor = async (req: Request<any, any, AuthorCreationRequestB
                 created_at: doc.createdAt,
                 updated_at: doc.updatedAt,
             },
-            errors: [],
         });
     }
     catch(error)
@@ -125,7 +124,6 @@ export const changeAuthor = async (req: Request<AuthorRequestParam, any, AuthorA
                 id: doc.id,
                 updated_at: doc.updatedAt,
             },
-            errors: [],
         });
     }
     catch(error)
@@ -153,7 +151,6 @@ export const getAuthor = async (req: Request<AuthorRequestParam>, res: Response<
                 created_at: doc.createdAt,
                 updated_at: doc.updatedAt,
             },
-            errors: [],
         });
     }
     catch(error)
@@ -207,7 +204,6 @@ export const getAuthors = async (req: Request<any, any, any, AuthorListRequestQu
                 created_at_before: createdAtBefore,
                 limit: limit,
             },
-            errors: [],
         });
     }
     catch(error)
@@ -226,7 +222,6 @@ export const deleteAuthor = async (req: Request<AuthorRequestParam>, res: Respon
 
         res.send({
             data: { id: doc.id },
-            errors: [],
         });
     }
     catch(error)
