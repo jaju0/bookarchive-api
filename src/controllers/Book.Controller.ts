@@ -1,4 +1,7 @@
 import { Request, Response } from "express";
+import { FieldValidationError } from "express-validator";
+import mongoose from "mongoose";
+import { EnvironmentVariables } from "../config/env.js";
 import { ResponseBody } from "../middleware/validationError.js";
 import { LanguageCode } from "../utils/langCodes.js";
 import { Book } from "../models/Book.js";
@@ -8,8 +11,6 @@ import { GenreResponseData } from "./Genre.Controller.js";
 import { Author } from "../models/Author.js";
 import { Publisher } from "../models/Publisher.js";
 import { Genre } from "../models/Genre.js";
-import mongoose from "mongoose";
-import { FieldValidationError } from "express-validator";
 
 export interface BookRequestParam
 {
@@ -120,9 +121,6 @@ export interface BookDeletionResponseData
 }
 
 
-const defaultPageLimit = process.env.BOOK_QUERY_DEFAULT_PAGE_LIMIT ? +process.env.BOOK_QUERY_DEFAULT_PAGE_LIMIT : 1000;
-
-
 export const getBook = async (req: Request<BookRequestParam>, res: Response<ResponseBody<BookResponseData>>) => {
     try
     {
@@ -205,7 +203,7 @@ export const getBook = async (req: Request<BookRequestParam>, res: Response<Resp
 export const getBooks = async (req: Request<any, any, any, BookListRequestQuery>, res: Response<ResponseBody<BookResponseDataUnpopulated[]>>) => {
     try
     {
-        const limit = req.query.limit === undefined ? defaultPageLimit : req.query.limit;
+        const limit = req.query.limit === undefined ? EnvironmentVariables.book.queryDefaultPageLimit : req.query.limit;
 
         const query = Book.find();
 

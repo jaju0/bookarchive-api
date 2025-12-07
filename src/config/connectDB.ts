@@ -1,13 +1,11 @@
 import mongoose from "mongoose";
+import { EnvironmentVariables } from "./env.js";
 
 export async function connectDB()
 {
     try
     {
-        if(process.env.DATABASE_URI)
-            await mongoose.connect(process.env.DATABASE_URI);
-        else
-            throw new Error("DATABASE_URI environment variable not set");
+        await mongoose.connect(EnvironmentVariables.databaseURI);
     }
     catch(error)
     {

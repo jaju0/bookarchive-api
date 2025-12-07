@@ -1,11 +1,5 @@
 import validator from "express-validator";
-
-const minTitleLength = process.env.BOOK_MIN_TITLE_LENGTH ? +process.env.BOOK_MIN_TITLE_LENGTH : 1;
-const maxTitleLength = process.env.BOOK_MAX_TITLE_LENGTH ? +process.env.BOOK_MAX_TITLE_LENGTH : 500;
-const minSubtitleLength = process.env.BOOK_MIN_SUBTITLE_LENGTH ? +process.env.BOOK_MIN_SUBTITLE_LENGTH : 1;
-const maxSubtitleLength = process.env.BOOK_MAX_SUBTITLE_LENGTH ? +process.env.BOOK_MAX_SUBTITLE_LENGTH : 500;
-const minDescriptionLength = process.env.BOOK_MIN_DESCRIPTION_LENGTH ? +process.env.BOOK_MIN_DESCRIPTION_LENGTH : 1;
-const maxDescriptionLength = process.env.BOOK_MAX_DESCRIPTION_LENGTH ? +process.env.BOOK_MAX_DESCRIPTION_LENGTH : 100000;
+import { EnvironmentVariables } from "../config/env.js";
 
 export const requestParam = () => {
     const errorMsgs = {
@@ -24,7 +18,7 @@ export const requestParam = () => {
 
 export const listRequestQuery = () => {
     const errorMsgs = {
-        title: `length must be between ${minTitleLength} and ${maxTitleLength} if provided`,
+        title: `length must be between ${EnvironmentVariables.book.minTitleLength} and ${EnvironmentVariables.book.maxTitleLength} if provided`,
         author_id: `optional`,
         publisher_id: `optional`,
         genre_id: `optional`,
@@ -35,7 +29,7 @@ export const listRequestQuery = () => {
     };
 
     return [
-        validator.query("title", errorMsgs.title).optional().trim().isLength({ min: minTitleLength, max: maxTitleLength }).escape(),
+        validator.query("title", errorMsgs.title).optional().trim().isLength({ min: EnvironmentVariables.book.minTitleLength, max: EnvironmentVariables.book.maxTitleLength }).escape(),
         validator.query("author_id", errorMsgs.author_id).optional().isMongoId(),
         validator.query("publisher_id", errorMsgs.publisher_id).optional().isMongoId(),
         validator.query("genre_id", errorMsgs.genre_id).optional().isMongoId(),
@@ -48,9 +42,9 @@ export const listRequestQuery = () => {
 
 export const creationRequestBody = () => {
     const errorMsgs = {
-        title: `is required and its length must be between ${minTitleLength} and ${maxTitleLength}`,
-        subtitle: `length must be between ${minSubtitleLength} and ${maxSubtitleLength} if provided`,
-        description: `length must be between ${minDescriptionLength} and ${maxDescriptionLength} if provided`,
+        title: `is required and its length must be between ${EnvironmentVariables.book.minTitleLength} and ${EnvironmentVariables.book.maxTitleLength}`,
+        subtitle: `length must be between ${EnvironmentVariables.book.minSubtitleLength} and ${EnvironmentVariables.book.maxSubtitleLength} if provided`,
+        description: `length must be between ${EnvironmentVariables.book.minDescriptionLength} and ${EnvironmentVariables.book.maxDescriptionLength} if provided`,
         isbn_10: `must be a valid isbn10 code if provided`,
         isbn_13: `must be a valid isbn13 code if provided`,
         author_id: `is required`,
@@ -64,9 +58,9 @@ export const creationRequestBody = () => {
     };
 
     return [
-        validator.body("title", errorMsgs.title).trim().isLength({ min: minTitleLength, max: maxTitleLength }).escape(),
-        validator.body("subtitle", errorMsgs.subtitle).optional().trim().isLength({ min: minSubtitleLength, max: maxSubtitleLength }).escape(),
-        validator.body("description", errorMsgs.description).optional().trim().isLength({ min: minDescriptionLength, max: maxDescriptionLength }).escape(),
+        validator.body("title", errorMsgs.title).trim().isLength({ min: EnvironmentVariables.book.minTitleLength, max: EnvironmentVariables.book.maxTitleLength }).escape(),
+        validator.body("subtitle", errorMsgs.subtitle).optional().trim().isLength({ min: EnvironmentVariables.book.minSubtitleLength, max: EnvironmentVariables.book.maxSubtitleLength }).escape(),
+        validator.body("description", errorMsgs.description).optional().trim().isLength({ min: EnvironmentVariables.book.minDescriptionLength, max: EnvironmentVariables.book.maxDescriptionLength }).escape(),
         validator.oneOf([
             validator.body("isbn_10", errorMsgs.isbn_10).isISBN({ version: "10" }),
             validator.body("isbn_13", errorMsgs.isbn_13).isISBN({ version: "13" }),
@@ -84,9 +78,9 @@ export const creationRequestBody = () => {
 
 export const amendmentRequestBody = () => {
     const errorMsgs = {
-        title: `length must be between ${minTitleLength} and ${maxTitleLength} if provided`,
-        subtitle: `length must be between ${minSubtitleLength} and ${maxSubtitleLength} if provided`,
-        description: `length must be between ${minDescriptionLength} and ${maxDescriptionLength} if provided`,
+        title: `length must be between ${EnvironmentVariables.book.minTitleLength} and ${EnvironmentVariables.book.maxTitleLength} if provided`,
+        subtitle: `length must be between ${EnvironmentVariables.book.minSubtitleLength} and ${EnvironmentVariables.book.maxSubtitleLength} if provided`,
+        description: `length must be between ${EnvironmentVariables.book.minDescriptionLength} and ${EnvironmentVariables.book.maxDescriptionLength} if provided`,
         isbn_10: `must be a valid isbn10 code if provided`,
         isbn_13: `must be a valid isbn13 code if provided`,
         author_id: `optional`,
@@ -101,9 +95,9 @@ export const amendmentRequestBody = () => {
 
     return [
         validator.oneOf([
-            validator.body("title", errorMsgs.title).trim().isLength({ min: minTitleLength, max: maxTitleLength }).escape(),
-            validator.body("subtitle", errorMsgs.subtitle).trim().isLength({ min: minSubtitleLength, max: maxSubtitleLength }).escape(),
-            validator.body("description", errorMsgs.description).trim().isLength({ min: minDescriptionLength, max: maxDescriptionLength }).escape(),
+            validator.body("title", errorMsgs.title).trim().isLength({ min: EnvironmentVariables.book.minTitleLength, max: EnvironmentVariables.book.maxTitleLength }).escape(),
+            validator.body("subtitle", errorMsgs.subtitle).trim().isLength({ min: EnvironmentVariables.book.minSubtitleLength, max: EnvironmentVariables.book.maxSubtitleLength }).escape(),
+            validator.body("description", errorMsgs.description).trim().isLength({ min: EnvironmentVariables.book.minDescriptionLength, max: EnvironmentVariables.book.maxDescriptionLength }).escape(),
             validator.body("isbn_10", errorMsgs.isbn_10).isISBN({ version: "10" }),
             validator.body("isbn_13", errorMsgs.isbn_13).isISBN({ version: "13" }),
             validator.body("author_id", errorMsgs.author_id).isMongoId(),

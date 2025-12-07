@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { EnvironmentVariables } from "../config/env.js";
 import { Author } from "../models/Author.js";
 import { ResponseBody } from "../middleware/validationError.js";
 
@@ -72,9 +73,6 @@ export interface AuthorDeletionResponseData
 {
     id: string;
 }
-
-
-const defaultPageLimit = process.env.AUTHOR_QUERY_DEFAULT_PAGE_LIMIT ? +process.env.AUTHOR_QUERY_DEFAULT_PAGE_LIMIT : 1000;
 
 
 export const createAuthor = async (req: Request<any, any, AuthorCreationRequestBody>, res: Response<ResponseBody<AuthorCreationResponseData>>) => {
@@ -168,7 +166,7 @@ export const getAuthor = async (req: Request<AuthorRequestParam>, res: Response<
 export const getAuthors = async (req: Request<any, any, any, AuthorListRequestQuery>, res: Response<ResponseBody<AuthorListResponseData[]>>) => {
     try
     {
-        const limit = req.query.limit === undefined ? defaultPageLimit : req.query.limit;
+        const limit = req.query.limit === undefined ? EnvironmentVariables.author.queryDefaultPageLimit : req.query.limit;
 
         const query = Author.find();
 

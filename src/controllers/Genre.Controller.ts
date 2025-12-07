@@ -1,5 +1,6 @@
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
 import { FieldValidationError } from "express-validator";
+import { EnvironmentVariables } from "../config/env.js";
 import { Genre } from "../models/Genre.js";
 import { ResponseBody } from "../middleware/validationError.js";
 import mongoose from "mongoose";
@@ -53,9 +54,6 @@ export interface GenreDeletionResponseData
 }
 
 
-const defaultPageLimit = process.env.GENRE_QUERY_DEFAULT_PAGE_LIMIT ? +process.env.GENRE_QUERY_DEFAULT_PAGE_LIMIT : 1000;
-
-
 export const getGenre = async (req: Request<GenreRequestParam>, res: Response<ResponseBody<GenreResponseData>>) => {
     try
     {
@@ -84,7 +82,7 @@ export const getGenre = async (req: Request<GenreRequestParam>, res: Response<Re
 export const getGenres = async (req: Request<any, any, any, GenreListRequestQuery>, res: Response<ResponseBody<GenreResponseData[]>>) => {
     try
     {
-        const limit = req.query.limit === undefined ? defaultPageLimit : req.query.limit;
+        const limit = req.query.limit === undefined ? EnvironmentVariables.genre.queryDefaultPageLimit : req.query.limit;
 
         const query = Genre.find();
 

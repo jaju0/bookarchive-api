@@ -1,9 +1,5 @@
 import validator from "express-validator";
-
-const minNameLength = process.env.GENRE_MIN_NAME_LENGTH ? +process.env.GENRE_MIN_NAME_LENGTH : 1;
-const maxNameLength = process.env.GENRE_MAX_NAME_LENGTH ? +process.env.GENRE_MAX_NAME_LENGTH : 100;
-const minDescriptionLength = process.env.GENRE_MIN_DESCRIPTION_LENGTH ? +process.env.GENRE_MIN_DESCRIPTION_LENGTH : 1;
-const maxDescriptionLength = process.env.GENRE_MAX_DESCRIPTION_LENGTH ? +process.env.GENRE_MAX_DESCRIPTION_LENGTH : 100000;
+import { EnvironmentVariables } from "../config/env.js";
 
 export const requestParam = () => {
     const errorMsgs = {
@@ -13,7 +9,7 @@ export const requestParam = () => {
     return [
         validator.oneOf([
             validator.param("nameOrId").trim().isMongoId(),
-            validator.param("nameOrId").trim().isLength({ min: minNameLength, max: maxNameLength }).escape(),
+            validator.param("nameOrId").trim().isLength({ min: EnvironmentVariables.genre.minNameLength, max: EnvironmentVariables.genre.maxNameLength }).escape(),
         ], {
             message: errorMsgs.nameOrId,
         }),
@@ -34,24 +30,24 @@ export const listRequestQuery = () => {
 
 export const creationRequestBody = () => {
     const errorMsgs = {
-        name: `is required and its length must be between ${minNameLength} and ${maxNameLength}`,
-        description: `length must be between ${minDescriptionLength} and ${maxDescriptionLength} if provided`,
+        name: `is required and its length must be between ${EnvironmentVariables.genre.minNameLength} and ${EnvironmentVariables.genre.maxNameLength}`,
+        description: `length must be between ${EnvironmentVariables.genre.minDescriptionLength} and ${EnvironmentVariables.genre.maxDescriptionLength} if provided`,
     };
 
     return [
-        validator.body("name", errorMsgs.name).trim().isLength({ min: minNameLength, max: maxNameLength }).escape(),
-        validator.body("description", errorMsgs.description).isLength({ min: minDescriptionLength, max: maxDescriptionLength }).escape(),
+        validator.body("name", errorMsgs.name).trim().isLength({ min: EnvironmentVariables.genre.minNameLength, max: EnvironmentVariables.genre.maxNameLength }).escape(),
+        validator.body("description", errorMsgs.description).isLength({ min: EnvironmentVariables.genre.minDescriptionLength, max: EnvironmentVariables.genre.maxDescriptionLength }).escape(),
     ];
 };
 
 export const amendmentRequestBody = () => {
     const errorMsgs = {
-        description: `length must be between ${minDescriptionLength} and ${maxDescriptionLength} if provided`,
+        description: `length must be between ${EnvironmentVariables.genre.minDescriptionLength} and ${EnvironmentVariables.genre.maxDescriptionLength} if provided`,
     };
 
     return [
         validator.oneOf([
-            validator.body("description", errorMsgs.description).isLength({ min: minDescriptionLength, max: maxDescriptionLength }).escape(),
+            validator.body("description", errorMsgs.description).isLength({ min: EnvironmentVariables.genre.minDescriptionLength, max: EnvironmentVariables.genre.maxDescriptionLength }).escape(),
         ]),
     ];
 };

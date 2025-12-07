@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { EnvironmentVariables } from "../config/env.js";
 import { ResponseBody } from "../middleware/validationError.js";
 import { Publisher } from "../models/Publisher.js";
 
@@ -56,8 +57,6 @@ export interface PublisherDeletionResponseData
     id: string;
 }
 
-const defaultPageLimit = process.env.PUBLISHER_QUERY_DEFAULT_PAGE_LIMIT ? +process.env.PUBLISHER_QUERY_DEFAULT_PAGE_LIMIT : 1000;
-
 
 export const getPublisher = async (req: Request<PublisherRequestParam>, res: Response<ResponseBody<PublisherResponseData>>) => {
     try
@@ -88,7 +87,7 @@ export const getPublisher = async (req: Request<PublisherRequestParam>, res: Res
 export const getPublishers = async (req: Request<any, any, any, PublisherListRequestQuery>, res: Response<ResponseBody<PublisherResponseData[]>>) => {
     try
     {
-        const limit = req.query.limit === undefined ? defaultPageLimit : req.query.limit;
+        const limit = req.query.limit === undefined ? EnvironmentVariables.publisher.queryDefaultPageLimit : req.query.limit;
 
         const query = Publisher.find();
 
