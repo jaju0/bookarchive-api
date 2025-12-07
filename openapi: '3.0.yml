@@ -169,8 +169,6 @@ paths:
                 properties:
                   data:
                     $ref: "#/components/schemas/CreationInfo"
-                  cursor:
-                    $ref: "#/components/schemas/Cursor"
         "400":
           description: Bad Request
           content:
