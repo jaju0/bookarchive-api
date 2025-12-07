@@ -170,6 +170,10 @@ paths:
                         - $ref: "#/components/schemas/AlternativeValidationError"
                         - $ref: "#/components/schemas/GroupedAlternativeValidationError"
                         - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
         "429":
           $ref: "#/components/responses/429"
         "500":
@@ -298,6 +302,10 @@ paths:
                         - $ref: "#/components/schemas/AlternativeValidationError"
                         - $ref: "#/components/schemas/GroupedAlternativeValidationError"
                         - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
         "404":
           $ref: "#/components/responses/404"
         "429":
@@ -334,6 +342,10 @@ paths:
                       oneOf:
                         - $ref: "#/components/schemas/FieldValidationError"
                         - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
         "404":
           $ref: "#/components/responses/404"
         "429":
@@ -456,6 +468,10 @@ paths:
                       oneOf:
                         - $ref: "#/components/schemas/FieldValidationError"
                         - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
         "429":
           $ref: "#/components/responses/429"
         "500":
@@ -539,6 +555,10 @@ paths:
                       oneOf:
                         - $ref: "#/components/schemas/FieldValidationError"
                         - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
         "404":
           $ref: "#/components/responses/404"
         "429":
@@ -558,6 +578,10 @@ paths:
           required: true
           description: authors ID
       responses:
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
         "404":
           $ref: "#/components/responses/404"
         "429":
@@ -663,6 +687,10 @@ paths:
                       oneOf:
                         - $ref: "#/components/schemas/FieldValidationError"
                         - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
         "429":
           $ref: "#/components/responses/429"
         "500":
@@ -746,6 +774,10 @@ paths:
                       oneOf:
                         - $ref: "#/components/schemas/FieldValidationError"
                         - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
         "404":
           $ref: "#/components/responses/404"
         "429":
@@ -782,6 +814,10 @@ paths:
                       oneOf:
                         - $ref: "#/components/schemas/FieldValidationError"
                         - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
         "404":
           $ref: "#/components/responses/404"
         "429":
@@ -868,6 +904,10 @@ paths:
                       oneOf:
                         - $ref: "#/components/schemas/FieldValidationError"
                         - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
         "429":
           $ref: "#/components/responses/429"
         "500":
@@ -947,6 +987,10 @@ paths:
                       oneOf:
                         - $ref: "#/components/schemas/FieldValidationError"
                         - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
         "404":
           $ref: "#/components/responses/404"
         "429":
@@ -983,6 +1027,10 @@ paths:
                       oneOf:
                         - $ref: "#/components/schemas/FieldValidationError"
                         - $ref: "#/components/schemas/UnknownFieldValidationError"
+        "401":
+          $ref: "#/components/responses/401"
+        "403":
+          $ref: "#/components/responses/403"
         "404":
           $ref: "#/components/responses/404"
         "429":
@@ -996,6 +1044,10 @@ components:
       scheme: bearer
       bearerFormat: JWT
   responses:
+    401:
+      description: Unauthorized
+    403:
+      description: Forbidden
     404:
       description: Not Found
     429:
