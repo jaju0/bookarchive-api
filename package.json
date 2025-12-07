@@ -3,8 +3,8 @@
 	"name": "bookarchive-api",
 	"main": "index.js",
 	"scripts": {
-		"build": "tsc",
-		"start": "pnpm run build && node dist/index.js"
+		"build": "tsc && cp .env dist/",
+		"start": "pnpm run build && node dist/index.js",
 	},
 	"dependencies": {
 		"cors": "^2.8.5",
@@ -12,11 +12,14 @@
 		"express": "^5.1.0",
 		"express-rate-limit": "^8.2.1",
 		"express-validator": "^7.3.1",
+		"jsonwebtoken": "^9.0.3",
 		"mongoose": "^9.0.0"
 	},
 	"devDependencies": {
 		"@types/cors": "^2.8.19",
 		"@types/express": "^5.0.5",
-		"typescript": "^5.9.3"
+		"@types/jsonwebtoken": "^9.0.10",
+		"mongodb-memory-server": "^10.4.0",
+		"typescript": "^5.9.3",
 	}
 }
